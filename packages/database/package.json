@@ -1,0 +1,25 @@
+{
+  "name": "@repo/database",
+  "private": true,
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+	  "db:generate": "prisma generate",
+	  "db:push": "prisma db push"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^7.3.0",
+    "@types/node": "^25.2.0",
+    "@types/pg": "^8.16.0",
+    "dotenv": "^17.2.3",
+    "pg": "^8.18.0",
+    "prisma": "^7.3.0"
+  }
+}

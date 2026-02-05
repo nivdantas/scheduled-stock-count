@@ -1,0 +1,11 @@
+{
+  "name": "stock-project",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "bun --filter '*' dev"
+  }
+}
