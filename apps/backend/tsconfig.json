@@ -1,5 +1,3 @@
 {
   "extends": "@repo/tsconfig/back.json",
-  "compilerOptions": {}
 }
-
