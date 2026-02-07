@@ -4,8 +4,8 @@
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-	  "db:generate": "prisma generate",
-	  "db:push": "prisma db push"
+    "db:generate": "prisma generate",
+    "db:push": "prisma db push"
   },
   "devDependencies": {
     "@types/bun": "latest"

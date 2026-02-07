@@ -12,3 +12,67 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Funcionario {
+	id	String @id @default(uuid())
+	nome String
+	email String @unique
+
+	contagens ContagemEstoque[]
+}
+
+model Produto {
+	id String @id @default(uuid())
+	codigoSistema String @unique
+	nome String
+
+	estoque EstoqueProduto?
+	itens ItemContagemEstoque[]
+}
+
+model EstoqueProduto {
+	id String @id @default(uuid())
+	produtoId String @unique
+	quantidadeSistema Int
+
+	produto Produto @relation(fields: [produtoId], references: [id])
+}
+
+model ContagemEstoque {
+	id String @id @default(uuid())
+	codigo String @unique
+	dataAgendada DateTime
+	responsavelId String
+	status StatusContagem @default(EM_ANDAMENTO)
+
+	criadoEm DateTime @default(now())
+	atualizadoEm DateTime @updatedAt
+
+	responsavel Funcionario @relation(fields: [responsavelId], references:[id])
+	itens ItemContagemEstoque[]
+}
+
+model ItemContagemEstoque {
+	id	String @id @default(uuid())
+	contagemEstoqueId String
+	produtoId String
+
+	quantidadeSistema Int
+	quantidadeContada Int?
+	situacao SituacaoItem @default(A_CONFERIR)
+	observacao String?
+
+	contagem ContagemEstoque @relation(fields: [contagemEstoqueId], references: [id], onDelete: Cascade)
+	produto Produto @relation(fields: [produtoId], references: [id])
+}
+
+enum StatusContagem {
+	EM_ANDAMENTO
+	FINALIZADA
+}
+
+enum SituacaoItem {
+	A_CONFERIR
+	CONFERIDO
+	FALTANTE_EXCEDENTE
+}
