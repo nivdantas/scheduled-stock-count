@@ -1,15 +1,17 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Averia_Libre, Lato } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const averia = Averia_Libre({
   subsets: ["latin"],
+  weight: ["300", "400", "700"],
+  variable: "--font-averia",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const lato = Lato({
   subsets: ["latin"],
+  weight: ["100", "300", "400", "700", "900"],
+  variable: "--font-lato",
 });
 
 export const metadata: Metadata = {
@@ -24,9 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${averia.variable} ${lato.variable} antialiased`}>
         {children}
       </body>
     </html>
