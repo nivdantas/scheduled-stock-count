@@ -12,7 +12,6 @@ app.use(express.json())
 
 app.get('/contagens/:id', async (req, res) => {
 	const { id } = req.params
-
 	try {
 		const contagem = await prisma.contagemEstoque.findUnique({
 			where: { id },
@@ -81,10 +80,19 @@ app.patch('/itens-contagem/:id', async (req, res) => {
 
 	try {
 		const itemAtual = await prisma.itemContagemEstoque.findUnique({
-			where: {id}
+			where: { id },
+			include: {
+				contagem: { select: { status: true}}
+			}
 		})
 
 		if(!itemAtual) return res.status(404).json( {error: 'Item não encontrado'} )
+
+	 	if (itemAtual.contagem.status === 'FINALIZADA') {
+      	return res.status(403).json({
+        error: 'Ação bloqueada: Esta contagem já foi finalizada.'
+      });
+    	}
 
 		let novaSituacao = 'A_CONFERIR'
 
@@ -103,6 +111,9 @@ app.patch('/itens-contagem/:id', async (req, res) => {
 			data: {
 				quantidadeContada: quantidadeContada === null ? null : Number(quantidadeContada), observacao,
 				situacao: novaSituacao as EnumSituacaoItemFieldUpdateOperationsInput
+			},
+			include: {
+				produto: true
 			}
 		})
 
@@ -113,9 +124,34 @@ app.patch('/itens-contagem/:id', async (req, res) => {
 	}
 })
 
+app.patch('/contagens/:id', async (req, res) => {
+  const { id } = req.params;
+
+  const { status } = req.body;
+
+  try {
+    const contagem = await prisma.contagemEstoque.update({
+      where: { id },
+      data: {
+        status: status
+      }
+    });
+
+    return res.json(contagem);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro ao atualizar status' });
+  }
+});
+
+
 app.patch('/contagens/:id/finalizar', async (req, res) => {
 	const { id } = req.params
 	try {
+		const check = await prisma.contagemEstoque.findUnique({ where: { id } });
+    	if (check?.status === 'FINALIZADA') {
+        return res.status(400).json({ error: 'Contagem já finalizada.' });
+    }
 		const contagem = await prisma.contagemEstoque.update({
 			where: { id },
 			data: { status: "FINALIZADA"}
@@ -126,6 +162,39 @@ app.patch('/contagens/:id/finalizar', async (req, res) => {
 		return res.status(500).json( {error: 'Erro ao finalizar'} )
 	}
 })
+
+app.patch('/itens-contagem/:id/reset', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const itemExistente = await prisma.itemContagemEstoque.findUnique({
+        where: { id },
+        include: { contagem: true }
+    });
+
+    if (!itemExistente) {
+        return res.status(404).json({ error: 'Item não encontrado' });
+    }
+
+    if (itemExistente.contagem.status === 'FINALIZADA') {
+        return res.status(400).json({ error: 'Contagem finalizada.' });
+    }
+    const item = await prisma.itemContagemEstoque.update({
+      where: { id },
+      data: {
+        quantidadeContada: null,
+        observacao: null,
+        situacao: 'A_CONFERIR'
+		},
+      include: {produto: true}
+    });
+
+    return res.json(item);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: 'Erro ao resetar item' });
+  }
+});
 
 
 app.listen(3000, () => {
