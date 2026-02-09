@@ -1,72 +1,72 @@
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+    provider = "prisma-client"
+    output   = "../generated/prisma"
 }
 
 datasource db {
-  provider = "postgresql"
+    provider = "postgresql"
 }
 
 model Funcionario {
-	id	String @id @default(uuid())
-	nome String
-	email String @unique
+    id    String @id @default(uuid())
+    nome  String
+    email String @unique
 
-	contagens ContagemEstoque[]
+    contagens ContagemEstoque[]
 }
 
 model Produto {
-	id String @id @default(uuid())
-	codigoSistema String @unique
-	nome String
+    id            String @id @default(uuid())
+    codigoSistema String @unique
+    nome          String
 
-	estoque EstoqueProduto?
-	itens ItemContagemEstoque[]
+    estoque EstoqueProduto?
+    itens   ItemContagemEstoque[]
 }
 
 model EstoqueProduto {
-	id String @id @default(uuid())
-	produtoId String @unique
-	quantidadeSistema Int
+    id                String @id @default(uuid())
+    produtoId         String @unique
+    quantidadeSistema Int
 
-	produto Produto @relation(fields: [produtoId], references: [id])
+    produto Produto @relation(fields: [produtoId], references: [id])
 }
 
 model ContagemEstoque {
-	id String @id @default(uuid())
-	codigo String @unique
-	dataAgendada DateTime
-	responsavelId String
-	status StatusContagem @default(EM_ANDAMENTO)
+    id            String         @id @default(uuid())
+    codigo        String         @unique
+    dataAgendada  DateTime
+    responsavelId String
+    status        StatusContagem @default(EM_ANDAMENTO)
 
-	criadoEm DateTime @default(now())
-	atualizadoEm DateTime @updatedAt
+    criadoEm     DateTime @default(now())
+    atualizadoEm DateTime @updatedAt
 
-	responsavel Funcionario @relation(fields: [responsavelId], references:[id])
-	itens ItemContagemEstoque[]
+    responsavel Funcionario           @relation(fields: [responsavelId], references: [id])
+    itens       ItemContagemEstoque[]
 }
 
 model ItemContagemEstoque {
-	id	String @id @default(uuid())
-	contagemEstoqueId String
-	produtoId String
+    id                String @id @default(uuid())
+    contagemEstoqueId String
+    produtoId         String
 
-	quantidadeSistema Int
-	quantidadeContada Int?
-	situacao SituacaoItem @default(A_CONFERIR)
-	observacao String?
+    quantidadeSistema Int
+    quantidadeContada Int?
+    situacao          SituacaoItem @default(A_CONFERIR)
+    observacao        String?
 
-	contagem ContagemEstoque @relation(fields: [contagemEstoqueId], references: [id], onDelete: Cascade)
-	produto Produto @relation(fields: [produtoId], references: [id])
+    contagem ContagemEstoque @relation(fields: [contagemEstoqueId], references: [id], onDelete: Cascade)
+    produto  Produto         @relation(fields: [produtoId], references: [id])
 }
 
 enum StatusContagem {
-	EM_ANDAMENTO
-	FINALIZADA
+    EM_ANDAMENTO
+    FINALIZADA
 }
 
 enum SituacaoItem {
-	A_CONFERIR
-	CONFERIDO
-	FALTANTE_EXCEDENTE
+    A_CONFERIR
+    CONFERIDO
+    FALTANTE_EXCEDENTE
 }

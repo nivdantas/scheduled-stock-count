@@ -1,6 +1,6 @@
 {
-	"extends": "./base.json",
-	"compilerOptions": {
+  "extends": "./base.json",
+  "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
     "target": "ES2023",

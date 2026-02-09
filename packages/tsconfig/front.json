@@ -14,9 +14,9 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "plugins": [
-         {
-           "name": "next"
-         }
-       ]
-     }
+      {
+        "name": "next"
+      }
+    ]
+  }
 }
