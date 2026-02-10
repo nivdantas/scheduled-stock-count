@@ -53,7 +53,9 @@ function ModalObservacao({
               {produtoCodigo}
             </span>
           </div>
-          <span className="font-lato text-xs text-stock-2 justify-self-end">Qtd.</span>
+          <span className="font-lato text-xs text-stock-2 justify-self-end">
+            Qtd.
+          </span>
           <div className="font-lato text-stock-6 text-sm">{produtoNome}</div>
           <span className="font-lato text-xs text-stock-red-1 justify-self-end mr-2 font-bold">
             {qtdInformada}
@@ -102,51 +104,58 @@ function CardItem({
   onReset,
 }: CardItemProps) {
   if (!item.produto)
-    return <div className="p-2 text-stock-red-2">Erro: Produto desconhecido</div>;
+    return (
+      <div className="p-2 text-stock-red-2">Erro: Produto desconhecido</div>
+    );
 
   const jaFoiContado = isDivergente || isConferido;
 
   return (
     <div
-      className={`p-3 rounded border flex justify-between items-start ${
+      className={`p-3 rounded border flex justify-center relative ${
         isDivergente
-          ? "bg-stock-red-light border-stock-red-1"
+          ? "border-stock-red-1"
           : isConferido
-            ? "border-stock-green-1 bg-stock-green-light"
-            : "border-stock-3 bg-stock-1"
+            ? "border-stock-green-light"
+            : "border-stock-3"
       }`}
     >
-      <div>
-        <span className="text-xs font-mono text-stock-2 block">
+      <div className="font-lato flex flex-col">
+	      <div className="justify-self-center text-center">
+        <span className="text-xs font-mono text-stock-2 block mb-1">
           {item.produto.codigoSistema}
         </span>
-        <h3 className="font-medium text-stock-6">{item.produto.nome}</h3>
+        <h3 className="font-medium text-stock-6 text-[16px]">
+          {item.produto.nome}
+        </h3>
 
         {item.observacao && (
-          <p className="mt-1 text-xs text-stock-red-1">Obs: {item.observacao}</p>
+          <p className="mt-1 text-xs text-stock-red-1">
+            Obs: {item.observacao}
+          </p>
         )}
-
-        {!jaFoiContado && onContar && <CardInput onConfirm={onContar} />}
       </div>
+        {!jaFoiContado && onContar && <CardInput onConfirm={onContar} />}
+        <div className="flex gap-3 absolute top-2 right-2">
+                     {jaFoiContado && (
+                       <span
+                         className={`font-bold ${isDivergente ? "text-stock-red-1" : "text-stock-green-2"}`}
+                       >
+                         {isConferido && "✓ "} {item.quantidadeContada}
+                       </span>
+                     )}
 
-      <div className="flex items-start gap-3">
-        {jaFoiContado && (
-          <span
-            className={`font-bold ${isDivergente ? "text-stock-red-1" : "text-stock-green-2"}`}
-          >
-            {isConferido && "✓ "} {item.quantidadeContada}
-          </span>
-        )}
+                     {jaFoiContado && onReset && (
+                       <button
+                         onClick={onReset}
+                         title="Resetar item"
+                         className="text-stock-2 hover:text-stock-red-3 hover:bg-stock-red-light rounded-full w-6 h-6 flex items-center justify-center transition-colors font-bold cursor-pointer"
+                       >
+                         ✕
+                       </button>
+                     )}
+                   </div>
 
-        {jaFoiContado && onReset && (
-          <button
-            onClick={onReset}
-            title="Resetar item"
-            className="text-stock-2 hover:text-stock-red-2 hover:bg-stock-red-light rounded-full w-6 h-6 flex items-center justify-center transition-colors font-bold"
-          >
-            ✕
-          </button>
-        )}
       </div>
     </div>
   );
@@ -166,7 +175,7 @@ function CardInput({ onConfirm }: { onConfirm: (qtd: number) => void }) {
       <input
         type="number"
         placeholder="Qtd"
-        className="w-20 border border-stock-2 rounded px-2 py-1 text-sm text-stock-6 bg-stock-1 focus:ring-1 focus:ring-stock-4 focus:border-stock-4 outline-none"
+        className="w-30 border border-stock-2 rounded px-2 py-2 text-sm text-stock-6 bg-stock-1 outline-none"
         value={qtd}
         onChange={(e) => setQtd(e.target.value)}
         onKeyDown={(e) => e.key === "Enter" && handleConfirm()}
@@ -174,7 +183,7 @@ function CardInput({ onConfirm }: { onConfirm: (qtd: number) => void }) {
       />
       <button
         onClick={handleConfirm}
-        className="bg-stock-blue-1 text-stock-1 px-3 py-1 rounded text-sm hover:bg-stock-blue-2 transition-colors"
+        className="border border-stock-blue-1 text-stock-blue-2 font-bold px-4 py-2 rounded text-sm hover:bg-stock-blue-light hover:cursor-pointer transition-colors"
       >
         OK
       </button>
@@ -353,8 +362,13 @@ export default function PaginaContagem() {
   };
 
   if (loading)
-    return <div className="p-10 text-center text-stock-5">Carregando contagem...</div>;
-  if (erro) return <div className="p-10 text-center text-stock-red-2">{erro}</div>;
+    return (
+      <div className="p-10 text-center text-stock-5">
+        Carregando contagem...
+      </div>
+    );
+  if (erro)
+    return <div className="p-10 text-center text-stock-red-2">{erro}</div>;
   if (!contagem) return null;
 
   const aConferir =
@@ -365,143 +379,155 @@ export default function PaginaContagem() {
     contagem?.itens.filter((i) => i.situacao === "FALTANTE_EXCEDENTE") || [];
 
   return (
-    <main className="min-h-screen bg-stock-bg p-6">
-      <header className="mb-8 bg-stock-1 p-6 shadow rounded-lg flex justify-between items-center border border-stock-3">
-        <div>
-          <h1 className="text-2xl font-bold text-stock-7">
-            Contagem: {contagem.codigo}
-          </h1>
-          <p className="text-stock-4">
-            Responsável: {contagem.responsavel.nome}
-          </p>
-        </div>
-        <div className="px-4 py-2 bg-stock-blue-light text-stock-blue-1 rounded-full font-medium text-sm">
-          {contagem.status}
-        </div>
-        {!isFinalizada && (
-          <>
-            <button
-              onClick={handleSalvar}
-              className="bg-stock-1 hover:bg-stock-bg text-stock-5 px-4 py-2 rounded shadow transition-colors border border-stock-2"
-            >
-              Salvar contagem
-            </button>
-            <button
-              onClick={() => setConfirmarFinalizacao(true)}
-              className="bg-stock-green-2 hover:bg-stock-green-3 text-stock-1 px-4 py-2 rounded shadow transition-colors"
-            >
-              Finalizar Conferência
-            </button>
-          </>
-        )}
-      </header>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-blue-1">
-          <h2 className="text-lg font-bold mb-4 flex justify-between text-stock-7">
-            A Conferir
-            <span className="bg-stock-bg px-2 rounded text-sm text-stock-5">
-              {aConferir.length}
-            </span>
-          </h2>
-          <div className="space-y-3">
-            {aConferir.map((item) => (
-              <CardItem
-                key={item.id}
-                item={item}
-                onContar={
-                  isFinalizada ? undefined : (qtd) => iniciarContagem(item, qtd)
-                }
-              />
-            ))}
-            {aConferir.length === 0 && (
-              <p className="text-stock-4 text-sm">Nenhum item pendente.</p>
-            )}
-          </div>
-        </section>
-
-        <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-red-2">
-          <h2 className="text-lg font-bold mb-4 text-stock-red-2 flex justify-between">
-            Divergentes
-            <span className="bg-stock-red-light px-2 rounded text-sm text-stock-red-1">
-              {divergentes.length}
-            </span>
-          </h2>
-          <div className="space-y-3">
-            {divergentes.map((item) => (
-              <CardItem
-                key={item.id}
-                item={item}
-                isDivergente
-                onReset={() => handleResetItem(item.id)}
-              />
-            ))}
-            {divergentes.length === 0 && (
-              <p className="text-stock-4 text-sm">Nenhuma divergência.</p>
-            )}
-          </div>
-        </section>
-
-        <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-green-2 opacity-80">
-          <h2 className="text-lg font-bold mb-4 text-stock-green-2 flex justify-between">
-            Conferidos
-            <span className="bg-stock-green-light px-2 rounded text-sm text-stock-green-1">
-              {conferidos.length}
-            </span>
-          </h2>
-          <div className="space-y-3">
-            {conferidos.map((item) => (
-              <CardItem
-                key={item.id}
-                item={item}
-                isConferido
-                onReset={() => handleResetItem(item.id)}
-              />
-            ))}
-            {conferidos.length === 0 && (
-              <p className="text-stock-4 text-sm">Nenhum item finalizado.</p>
-            )}
-          </div>
-        </section>
-      </div>
-
-      {pendente && (
-        <ModalObservacao
-          isOpen={modalOpen}
-          onClose={() => setModalOpen(false)}
-          onConfirm={confirmarDivergencia}
-          qtdInformada={pendente.qtd}
-          produtoNome={pendente.nome}
-          produtoCodigo={pendente.codigo}
-        />
-      )}
-
-      {confirmarFinalizacao && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-stock-1 p-6 rounded-lg shadow-xl w-96 border border-stock-3">
-            <h3 className="text-lg font-bold mb-2 text-stock-7">Tem certeza?</h3>
-            <p className="text-stock-5 mb-6 text-sm">
-              Ao finalizar, você <strong className="text-stock-6">não poderá mais alterar</strong>{" "}
-              nenhuma quantidade. Confirma o encerramento da contagem{" "}
-              <strong className="text-stock-6">{contagem.codigo}</strong>?
+    <main className="min-h-screen bg-stock-1 p-6 flex justify-center">
+      <div className="w-full py-5 xl:max-w-340 lg:max-w-2xl md:max-w-xl">
+        <header className="bg-stock-1 p-5 shadow-xs rounded-lg flex justify-between items-center border border-stock-3 font-lato">
+          <div>
+            <h1 className="text-2xl font-bold text-stock-7 mb-1">
+              Contagem:{" "}
+              <strong className="font-averia">{contagem.codigo}</strong>
+            </h1>
+            <p className="text-stock-4">
+              Responsável: <strong>{contagem.responsavel.nome}</strong>
             </p>
-            <div className="flex justify-end gap-2">
-              <button
-                onClick={() => setConfirmarFinalizacao(false)}
-                className="px-4 py-2 text-stock-5 hover:ring-1 hover:ring-stock-4 rounded transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleFinalizar}
-                className="px-4 py-2 bg-stock-green-2 text-stock-1 rounded hover:bg-stock-green-3 transition-colors"
-              >
-                Confirmar
-              </button>
+          </div>
+          <div className="px-6 py-2 border border-stock-4 text-stock-red-3 rounded-lg font-averia text-xl">
+            {contagem.status}
+          </div>
+        </header>
+
+        {!isFinalizada && (
+                 <div className="my-4 flex justify-start gap-5 font-averia">
+                   <button
+                     onClick={handleSalvar}
+                     className="bg-stock-1 hover:ring-1 text-stock-5 px-4 py-2 rounded shadow transition-colors border border-stock-2 uppercase cursor-pointer"
+                   >
+                     Salvar
+                   </button>
+                   <button
+                     onClick={() => setConfirmarFinalizacao(true)}
+                     className="bg-stock-red-1 hover:bg-stock-red-3 text-stock-1 px-4 py-2 rounded shadow transition-colors uppercase cursor-pointer"
+                   >
+                     Finalizar
+                   </button>
+                 </div>
+               )}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-blue-1">
+            <h2 className="text-xl font-bold mb-4 flex justify-between text-stock-blue-2 font-averia uppercase">
+              A Conferir
+              <span className="bg-stock-1 px-2 rounded text-sm text-stock-blue-2">
+                {aConferir.length}
+              </span>
+            </h2>
+            <div className="space-y-3 grid justify-center">
+              {aConferir.map((item) => (
+                <CardItem
+                  key={item.id}
+                  item={item}
+                  onContar={
+                    isFinalizada
+                      ? undefined
+                      : (qtd) => iniciarContagem(item, qtd)
+                  }
+                />
+              ))}
+              {aConferir.length === 0 && (
+                <p className="text-stock-4 text-sm">Nenhum item pendente.</p>
+              )}
+            </div>
+          </section>
+
+          <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-red-2">
+            <h2 className="text-lg font-bold mb-4 text-stock-red-2 flex justify-between font-averia uppercase">
+              Divergentes
+              <span className="bg-stock-red-light px-2 rounded text-sm text-stock-red-1">
+                {divergentes.length}
+              </span>
+            </h2>
+            <div className="space-y-3">
+              {divergentes.map((item) => (
+                <CardItem
+                  key={item.id}
+                  item={item}
+                  isDivergente
+                  onReset={() => handleResetItem(item.id)}
+                />
+              ))}
+              {divergentes.length === 0 && (
+                <p className="text-stock-4 text-sm">Nenhuma divergência.</p>
+              )}
+            </div>
+          </section>
+
+          <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-green-2 opacity-80">
+            <h2 className="text-xl font-bold mb-4 text-stock-green-2 flex justify-between font-averia uppercase">
+              Conferidos
+              <span className="bg-stock-green-light px-2 rounded text-sm text-stock-green-1">
+                {conferidos.length}
+              </span>
+            </h2>
+            <div className="space-y-3">
+              {conferidos.map((item) => (
+                <CardItem
+                  key={item.id}
+                  item={item}
+                  isConferido
+                  onReset={() => handleResetItem(item.id)}
+                />
+              ))}
+              {conferidos.length === 0 && (
+                <p className="text-stock-4 text-sm">Nenhum item finalizado.</p>
+              )}
+            </div>
+          </section>
+        </div>
+
+        {pendente && (
+          <ModalObservacao
+            isOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+            onConfirm={confirmarDivergencia}
+            qtdInformada={pendente.qtd}
+            produtoNome={pendente.nome}
+            produtoCodigo={pendente.codigo}
+          />
+        )}
+
+        {confirmarFinalizacao && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+            <div className="bg-stock-1 p-6 rounded-lg shadow-xl w-96 border border-stock-3">
+              <h3 className="text-lg font-bold mb-2 text-stock-7">
+                Tem certeza?
+              </h3>
+              <p className="text-stock-5 mb-6 text-sm">
+                Ao finalizar, você{" "}
+                <strong className="text-stock-6">
+                  não poderá mais alterar
+                </strong>{" "}
+                nenhuma quantidade. Confirma o encerramento da contagem{" "}
+                <strong className="text-stock-6">{contagem.codigo}</strong>?
+              </p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setConfirmarFinalizacao(false)}
+                  className="px-4 py-2 text-stock-5 hover:ring-1 hover:ring-stock-4 rounded transition-colors"
+                >
+                  Cancelar
+                </button>
+                <button
+                  onClick={handleFinalizar}
+                  className="px-4 py-2 bg-stock-green-2 text-stock-1 rounded hover:bg-stock-green-3 transition-colors"
+                >
+                  Confirmar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+      </div>
     </main>
   );
 }
