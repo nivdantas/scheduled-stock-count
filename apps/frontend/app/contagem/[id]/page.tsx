@@ -1,13 +1,13 @@
 import ContagemPage from "@/app/components/ContagemPage";
 import { Contagem } from "@/app/types/contagem";
 
+
 async function getContagem(id: string): Promise<Contagem> {
-  const res = await fetch(`http://backend:3000/contagens/${id}`, {
+  const res = await fetch(`http://localhost:3000/contagens/${id}`, {
     cache: "no-cache",
   });
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Failed to fetch data: ${res.status} - ${text}`);
+    throw new Error("Failed to fetch data");
   }
   return res.json();
 }

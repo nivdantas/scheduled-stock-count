@@ -4,10 +4,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const baseUrl = typeof window === 'undefined'
-  ? 'http://backend:3000'
-  : 'http://localhost:3000';
-
 export function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -23,11 +19,10 @@ export function LoginForm() {
     const password = formData.get("password");
 
     try {
-      const res = await fetch(`${baseUrl}/login`, {
+      const res = await fetch("http://localhost:3000/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-		  body: JSON.stringify({ email, password }),
-        cache: 'no-store'
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await res.json();
