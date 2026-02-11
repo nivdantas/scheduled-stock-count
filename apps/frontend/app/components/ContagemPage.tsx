@@ -8,6 +8,11 @@ import type {
   CardItemProps,
 } from "@/app/types/contagem";
 
+const baseUrl =
+  typeof window === "undefined"
+    ? "http://backend:3000"
+    : "http://localhost:3000";
+
 function ModalObservacao({
   isOpen,
   onClose,
@@ -242,14 +247,11 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     try {
       const body = { quantidadeContada: qtd, observacao: obs };
 
-      const res = await fetch(
-        `http://localhost:3000/itens-contagem/${itemId}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        },
-      );
+      const res = await fetch(`${baseUrl}/itens-contagem/${itemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
       if (!res.ok) throw new Error("Falha ao salvar");
 
@@ -274,12 +276,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     if (isFinalizada) return;
 
     try {
-      const res = await fetch(
-        `http://localhost:3000/itens-contagem/${itemId}/reset`,
-        {
-          method: "PATCH",
-        },
-      );
+      const res = await fetch(`${baseUrl}/itens-contagem/${itemId}/reset`, {
+        method: "PATCH",
+      });
 
       if (!res.ok) throw new Error("Erro ao resetar");
 
@@ -301,12 +300,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
   const handleFinalizar = async () => {
     try {
-      const res = await fetch(
-        `http://localhost:3000/contagens/${id}/finalizar`,
-        {
-          method: "PATCH",
-        },
-      );
+      const res = await fetch(`${baseUrl}/contagens/${id}/finalizar`, {
+        method: "PATCH",
+      });
 
       if (!res.ok) throw new Error("Erro ao finalizar");
 
@@ -323,7 +319,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
   const handleSalvar = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/contagens/${id}`, {
+      const res = await fetch(`${baseUrl}/contagens/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "EM_ANDAMENTO" }),
