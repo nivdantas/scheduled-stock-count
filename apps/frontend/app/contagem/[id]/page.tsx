@@ -3,7 +3,7 @@ import { Contagem } from "@/app/types/contagem";
 
 
 async function getContagem(id: string): Promise<Contagem> {
-  const res = await fetch(`http://localhost:3000/contagens/${id}`, {
+  const res = await fetch(`http://backend:3000/contagens/${id}`, {
     cache: "no-cache",
   });
   if (!res.ok) {

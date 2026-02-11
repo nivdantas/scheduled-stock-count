@@ -8,6 +8,11 @@ import type {
   CardItemProps,
 } from "@/app/types/contagem";
 
+const baseUrl =
+  typeof window === "undefined"
+    ? "http://backend:3000"
+    : "http://localhost:3000";
+
 function ModalObservacao({
   isOpen,
   onClose,
@@ -243,7 +248,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
       const body = { quantidadeContada: qtd, observacao: obs };
 
       const res = await fetch(
-        `http://localhost:3000/itens-contagem/${itemId}`,
+        `${baseUrl}/itens-contagem/${itemId}`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -275,7 +280,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/itens-contagem/${itemId}/reset`,
+        `${baseUrl}/itens-contagem/${itemId}/reset`,
         {
           method: "PATCH",
         },
@@ -302,7 +307,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
   const handleFinalizar = async () => {
     try {
       const res = await fetch(
-        `http://localhost:3000/contagens/${id}/finalizar`,
+        `${baseUrl}/contagens/${id}/finalizar`,
         {
           method: "PATCH",
         },
@@ -323,7 +328,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
   const handleSalvar = async () => {
     try {
-      const res = await fetch(`http://localhost:3000/contagens/${id}`, {
+      const res = await fetch(`${baseUrl}/contagens/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "EM_ANDAMENTO" }),

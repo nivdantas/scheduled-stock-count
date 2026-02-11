@@ -10,7 +10,7 @@ COPY apps/frontend/package.json ./apps/frontend/
 COPY packages/database ./packages/database
 COPY packages/tsconfig ./packages/tsconfig
 
-RUN bun install
+RUN bun install --no-save
 
 
 WORKDIR /app/packages/database
@@ -19,10 +19,10 @@ ENV DATABASE_URL="postgresql://user:password@postgres:5432/stockdb?schema=public
 
 RUN bunx prisma generate
 
-WORKDIR /app/
-COPY apps/frontend ./apps/frontend
+WORKDIR /app/apps/frontend
+COPY apps/frontend ./
 
-RUN bun run vite build
+RUN bun run build
 
 EXPOSE 3001
 
