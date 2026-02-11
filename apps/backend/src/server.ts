@@ -25,6 +25,8 @@ app.use(authRoutes);
 app.use(contagemRoutes)
 
 const PORT = 3000;
-app.listen(3000, () => {
-  console.log(`Server rodando na porta ${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(3000, () => console.log('Dev server on 3000'));
+}
+
+export default app;
