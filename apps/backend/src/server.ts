@@ -6,8 +6,16 @@ import cors from "cors";
 const app = express();
 
 // Middlewares
+const allowedOrigins = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(',') : ['http://localhost:3001'];
+
 app.use(cors({
-	origin: "http://localhost:3001",
+	origin: (origin, callback) => {
+		if (!origin || allowedOrigins.includes(origin)) {
+			callback(null, true);
+		} else {
+			callback(new Error('Not allowed by CORS'));
+		}
+	},
 	credentials: true
 }));
 app.use(express.json());
