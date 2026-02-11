@@ -1,7 +1,6 @@
 import ContagemPage from "@/app/components/ContagemPage";
 import { Contagem } from "@/app/types/contagem";
 
-export const dynamic = "force-dynamic";
 
 async function getContagem(id: string): Promise<Contagem> {
   const res = await fetch(`http://localhost:3000/contagens/${id}`, {

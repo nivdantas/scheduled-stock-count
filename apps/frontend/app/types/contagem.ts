@@ -31,4 +31,5 @@ export interface CardItemProps {
   isConferido?: boolean;
   onContar?: (qtd: number) => void;
   onReset?: () => void;
+  isFinalizada?: boolean;
 }

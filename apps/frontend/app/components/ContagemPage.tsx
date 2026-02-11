@@ -102,6 +102,7 @@ function CardItem({
   isConferido,
   onContar,
   onReset,
+  isFinalizada,
 }: CardItemProps) {
   if (!item.produto)
     return (
@@ -121,41 +122,41 @@ function CardItem({
       }`}
     >
       <div className="font-lato flex flex-col">
-	      <div className="justify-self-center text-center">
-        <span className="text-xs font-mono text-stock-2 block mb-1">
-          {item.produto.codigoSistema}
-        </span>
-        <h3 className="font-medium text-stock-6 text-[16px]">
-          {item.produto.nome}
-        </h3>
+        <div className="justify-self-center text-center">
+          <span className="text-xs font-mono text-stock-2 block mb-1">
+            {item.produto.codigoSistema}
+          </span>
+          <h3 className="font-medium text-stock-6 text-[16px]">
+            {item.produto.nome}
+          </h3>
 
-        {item.observacao && (
-          <p className="mt-1 text-xs text-stock-red-1">
-            Obs: {item.observacao}
-          </p>
-        )}
-      </div>
+          {item.observacao && (
+            <p className="mt-1 text-xs text-stock-red-1">
+              Obs: {item.observacao}
+            </p>
+          )}
+        </div>
         {!jaFoiContado && onContar && <CardInput onConfirm={onContar} />}
         <div className="flex gap-3 absolute top-2 right-2">
-                     {jaFoiContado && (
-                       <span
-                         className={`font-bold ${isDivergente ? "text-stock-red-1" : "text-stock-green-2"}`}
-                       >
-                         {isConferido && "✓ "} {item.quantidadeContada}
-                       </span>
-                     )}
+          {jaFoiContado && (
+            <span
+              className={`font-bold ${isDivergente ? "text-stock-red-1" : "text-stock-green-2"}`}
+            >
+              {isConferido && "✓ "} {item.quantidadeContada}
+            </span>
+          )}
 
-                     {jaFoiContado && onReset && (
-                       <button
-                         onClick={onReset}
-                         title="Resetar item"
-                         className="text-stock-2 hover:text-stock-red-3 hover:bg-stock-red-light rounded-full w-6 h-6 flex items-center justify-center transition-colors font-bold cursor-pointer"
-                       >
-                         ✕
-                       </button>
-                     )}
-                   </div>
-
+          {jaFoiContado && onReset && (
+            <button
+              onClick={onReset}
+              title="Resetar item"
+              disabled={isFinalizada}
+              className="text-stock-2 hover:text-stock-red-3 hover:bg-stock-red-light rounded-full w-6 h-6 flex items-center justify-center transition-colors font-bold cursor-pointer disabled:cursor-not-allowed"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );
@@ -197,6 +198,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
   const [contagem, setContagem] = useState<Contagem | null>(data);
   const [confirmarFinalizacao, setConfirmarFinalizacao] = useState(false);
+  const [search, setSearch] = useState("");
 
   const [modalOpen, setModalOpen] = useState(false);
   const [pendente, setPendente] = useState<{
@@ -342,12 +344,22 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
   if (!contagem) return null;
 
+  const itensFiltrados = contagem.itens.filter((item) => {
+    if (!search) return true;
+    const t = search.toLowerCase();
+    const nome = item.produto.nome.toLowerCase();
+    const codigo = item.produto.codigoSistema.toLowerCase();
+
+    return nome.includes(t) || codigo.includes(t);
+  });
+
   const aConferir =
-    contagem?.itens.filter((i) => i.situacao === "A_CONFERIR") || [];
+    itensFiltrados.filter((i) => i.situacao === "A_CONFERIR") || [];
   const conferidos =
-    contagem?.itens.filter((i) => i.situacao === "CONFERIDO") || [];
-  const divergentes =
-    contagem?.itens.filter((i) => i.situacao === "FALTANTE_EXCEDENTE") || [];
+    itensFiltrados.filter((i) => i.situacao === "CONFERIDO") || [];
+  const divergentes = itensFiltrados.filter(
+    (i) => i.situacao === "FALTANTE_EXCEDENTE",
+  );
 
   return (
     <main className="min-h-screen bg-stock-1 p-6 flex justify-center">
@@ -367,22 +379,31 @@ export default function ContagemPage({ data }: { data: Contagem }) {
           </div>
         </header>
 
+        <div className="my-5 relative">
+          <input
+            type="text"
+            placeholder="Buscar por nome ou código"
+            className="block w-full pl-4 pr-3 py-2 border border-stock-3 rounded-md leading-5 bg-stock-1 text-stock-7 placeholder-stock-5 focus:outline-none focus:ring-1 focus:ring-stock-red-3 focus:border-stock-red-3 sm:text-sm transition duration-150 ease-in-out font-lato"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
         {!isFinalizada && (
-                 <div className="my-4 flex justify-start gap-5 font-averia">
-                   <button
-                     onClick={handleSalvar}
-                     className="bg-stock-1 hover:ring-1 text-stock-5 px-4 py-2 rounded shadow transition-colors border border-stock-2 uppercase cursor-pointer"
-                   >
-                     Salvar
-                   </button>
-                   <button
-                     onClick={() => setConfirmarFinalizacao(true)}
-                     className="bg-stock-red-1 hover:bg-stock-red-3 text-stock-1 px-4 py-2 rounded shadow transition-colors uppercase cursor-pointer"
-                   >
-                     Finalizar
-                   </button>
-                 </div>
-               )}
+          <div className="my-4 flex justify-start gap-5 font-averia">
+            <button
+              onClick={handleSalvar}
+              className="bg-stock-1 hover:ring-1 text-stock-5 px-4 py-2 rounded shadow transition-colors border border-stock-2 uppercase cursor-pointer"
+            >
+              Salvar
+            </button>
+            <button
+              onClick={() => setConfirmarFinalizacao(true)}
+              className="bg-stock-red-1 hover:bg-stock-red-3 text-stock-1 px-4 py-2 rounded shadow transition-colors uppercase cursor-pointer"
+            >
+              Finalizar
+            </button>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <section className="bg-stock-1 p-4 rounded-lg shadow border-t-4 border-stock-blue-1">
@@ -424,6 +445,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
                   item={item}
                   isDivergente
                   onReset={() => handleResetItem(item.id)}
+                  isFinalizada={isFinalizada}
                 />
               ))}
               {divergentes.length === 0 && (
@@ -446,6 +468,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
                   item={item}
                   isConferido
                   onReset={() => handleResetItem(item.id)}
+                  isFinalizada={isFinalizada}
                 />
               ))}
               {conferidos.length === 0 && (
@@ -497,7 +520,6 @@ export default function ContagemPage({ data }: { data: Contagem }) {
             </div>
           </div>
         )}
-
       </div>
     </main>
   );

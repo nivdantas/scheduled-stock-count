@@ -1,5 +1,6 @@
 import "dotenv/config";
 import { PrismaClient } from "../generated/prisma/client";
+import { hash } from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const connectionString = `${process.env.DATABASE_URL}`;
@@ -14,10 +15,12 @@ async function main() {
   await prisma.produto.deleteMany();
   await prisma.funcionario.deleteMany();
 
+  const senhaHash = await hash('123456', 8)
   const funcionario = await prisma.funcionario.create({
     data: {
-      nome: "Niv",
-      email: "niv@teste.com",
+      nome: "admin",
+      email: "admin@teste.com",
+      password: senhaHash
     },
   });
 
