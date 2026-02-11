@@ -1,0 +1,6 @@
+.env
+packages/database/.env
+node_modules
+.next
+dist
+.git
