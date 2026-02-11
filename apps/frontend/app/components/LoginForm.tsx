@@ -23,13 +23,13 @@ export function LoginForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
+        credentials: "include",
       });
 
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || "Falha ao autenticar");
 
-      localStorage.setItem("stock_token", data.token);
       localStorage.setItem("stock_user", JSON.stringify(data.user));
       if (data.contagemAtivaId) {
         router.push(`/contagem/${data.contagemAtivaId}`);

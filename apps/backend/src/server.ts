@@ -6,7 +6,10 @@ import cors from "cors";
 const app = express();
 
 // Middlewares
-app.use(cors());
+app.use(cors({
+	origin: "http://localhost:3001",
+	credentials: true
+}));
 app.use(express.json());
 
 // Rotas

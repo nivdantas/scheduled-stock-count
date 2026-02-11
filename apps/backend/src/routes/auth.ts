@@ -35,8 +35,14 @@ router.post("/login", async (req, res) => {
 
     const contagemAtivaId = contagemAlvo ? contagemAlvo.id : null;
     const { password: _, contagens, ...userSemSenha } = user;
-
-    return res.json({ token, user: userSemSenha, contagemAtivaId });
+	  res.cookie("stock_token", token, {
+		  httpOnly: true,
+		  secure: process.env.NODE_ENV === "production",
+		  maxAge: 24 * 60 * 60 * 1000,
+		  sameSite: "strict",
+		  path: "/"
+    })
+    return res.json({ user: userSemSenha, contagemAtivaId });
   } catch (error) {
     return res.status(500).json({ error: "Erro no login" });
   }
