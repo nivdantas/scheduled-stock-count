@@ -1,18 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 
-const baseUrl = typeof window === 'undefined'
-  ? 'http://backend:3000'
-  : 'http://localhost:3000';
+const baseUrl =
+  typeof window === "undefined"
+    ? "http://backend:3000"
+    : "http://localhost:3000";
 
 export function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  useEffect(() => {
 
+     const checkSession = async () => {
+		 setLoading(true);
+       try {
+         const res = await fetch(`${baseUrl}/verify`, {
+           method: "GET",
+           credentials: "include",
+           cache: "no-store"
+         });
+
+         if (res.ok) {
+           const data = await res.json();
+           if (data.contagemAtivaId) {
+             router.push(`/contagem/${data.contagemAtivaId}`);
+           } else {
+             router.push("/");
+           }
+         } else {
+             setLoading(false);
+         }
+       } catch (err) {
+		   console.log(err);
+         setLoading(false);
+       }
+     };
+
+     checkSession();
+   }, [router]);
   async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
@@ -36,22 +65,27 @@ export function LoginForm() {
       if (!res.ok) throw new Error(data.error || "Falha ao autenticar");
 
       localStorage.setItem("stock_user", JSON.stringify(data.user));
-      if (data.contagemAtivaId) {
-        router.push(`/contagem/${data.contagemAtivaId}`);
-      } else {
-        router.push("/");
-      }
+		setTimeout(() =>{
+			if (data.contagemAtivaId) {
+				router.push(`/contagem/${data.contagemAtivaId}`);
+			} else {
+				router.push("/");
+			}
+		},100)
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
       } else {
         setError("Erro desconhecido.");
       }
-    } finally {
+    }
       setLoading(false);
     }
-  }
 
+  if (loading && !error) {
+       return <div className="flex justify-center p-10"><span className="w-8 h-8 border-4 border-gray-200 border-t-stock-red-1 rounded-full animate-spin"></span></div>;
+
+   }
   return (
     <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-sm">
       {error && (

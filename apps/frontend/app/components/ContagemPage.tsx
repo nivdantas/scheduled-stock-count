@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import type {
   Contagem,
   ItemContagem,
@@ -12,7 +12,6 @@ const baseUrl =
   typeof window === "undefined"
     ? "http://backend:3000"
     : "http://localhost:3000";
-
 function ModalObservacao({
   isOpen,
   onClose,
@@ -200,6 +199,7 @@ function CardInput({ onConfirm }: { onConfirm: (qtd: number) => void }) {
 export default function ContagemPage({ data }: { data: Contagem }) {
   const params = useParams();
   const id = params.id as string;
+  const router = useRouter();
 
   const [contagem, setContagem] = useState<Contagem | null>(data);
   const [confirmarFinalizacao, setConfirmarFinalizacao] = useState(false);
@@ -247,14 +247,11 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     try {
       const body = { quantidadeContada: qtd, observacao: obs };
 
-      const res = await fetch(
-        `${baseUrl}/itens-contagem/${itemId}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(body),
-        },
-      );
+      const res = await fetch(`${baseUrl}/itens-contagem/${itemId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
       if (!res.ok) throw new Error("Falha ao salvar");
 
@@ -279,12 +276,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     if (isFinalizada) return;
 
     try {
-      const res = await fetch(
-        `${baseUrl}/itens-contagem/${itemId}/reset`,
-        {
-          method: "PATCH",
-        },
-      );
+      const res = await fetch(`${baseUrl}/itens-contagem/${itemId}/reset`, {
+        method: "PATCH",
+      });
 
       if (!res.ok) throw new Error("Erro ao resetar");
 
@@ -306,12 +300,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
 
   const handleFinalizar = async () => {
     try {
-      const res = await fetch(
-        `${baseUrl}/contagens/${id}/finalizar`,
-        {
-          method: "PATCH",
-        },
-      );
+      const res = await fetch(`${baseUrl}/contagens/${id}/finalizar`, {
+        method: "PATCH",
+      });
 
       if (!res.ok) throw new Error("Erro ao finalizar");
 
@@ -347,6 +338,21 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     }
   };
 
+  async function handleLogout() {
+    try {
+      await fetch(`${baseUrl}/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+    } finally {
+      localStorage.removeItem("stock_user");
+
+      router.refresh();
+      router.push("/");
+    }
+  }
   if (!contagem) return null;
 
   const itensFiltrados = contagem.itens.filter((item) => {
@@ -407,6 +413,11 @@ export default function ContagemPage({ data }: { data: Contagem }) {
             >
               Finalizar
             </button>
+            <button
+                         onClick={handleLogout}
+                         className="bg-stock-1 hover:ring-1 text-stock-red-3 px-4 py-2 rounded shadow transition-colors border border-stock-red-3 uppercase cursor-pointer ml-auto"
+					  >Logout
+					  </button>
           </div>
         )}
 

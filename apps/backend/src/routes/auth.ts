@@ -1,14 +1,14 @@
 import { Router } from "express";
 import { prisma } from "@repo/database";
 import { compare } from "bcryptjs";
-import { sign } from "jsonwebtoken";
+import { sign, verify } from "jsonwebtoken";
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || "psecret";
 
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-
+	console.log(req.body);
   try {
     const user = await prisma.funcionario.findUnique({
       where: { email },
@@ -47,5 +47,57 @@ router.post("/login", async (req, res) => {
     return res.status(500).json({ error: "Erro no login" });
   }
 });
+
+router.post("/logout", (req, res) => {
+  res.clearCookie("stock_token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/"
+  });
+  return res.json({ message: "Deslogado com sucesso" });
+});
+
+router.get("/verify", async (req, res) => {
+  const token = req.cookies.stock_token;
+
+  if (!token) {
+    return res.status(401).json({ authenticated: false });
+  }
+
+  try {
+    const decoded = verify(token, JWT_SECRET) as { id: string };
+
+    const user = await prisma.funcionario.findUnique({
+      where: { id: decoded.id },
+      include: {
+        contagens: {
+          take: 3,
+          orderBy: { criadoEm: "desc" },
+        },
+      },
+    });
+
+    if (!user) return res.status(401).json({ authenticated: false });
+
+    let contagemAlvo = user.contagens.find((c) => c.status !== "FINALIZADA");
+    if (!contagemAlvo && user.contagens.length > 0) {
+      contagemAlvo = user.contagens[0];
+    }
+    const contagemAtivaId = contagemAlvo ? contagemAlvo.id : null;
+
+    const { password: _, contagens, ...userSemSenha } = user;
+
+    return res.json({
+      authenticated: true,
+      user: userSemSenha,
+      contagemAtivaId
+    });
+
+  } catch (error) {
+    return res.status(401).json({ authenticated: false });
+  }
+});
+
 
 export default router;
