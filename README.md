@@ -15,7 +15,7 @@ Sistema de contagem de estoque agendado: Um sistema que agenda contagens de esto
 - O projeto consta com três seções: A conferir, Faltantes / Excedentes e Conferidos. Estes constam sistema de filtro por nome do produto/código no sistema. 
 - Consta com JWT auth com cookies para login do usuário. (Definido pelo seed do prisma ao rodar o projeto para ambiente de desenvolvimento: { email: admin@teste.com, senha: 123456})
 - Testes automatizados básicos, além de tratamento de erros e tipagem com TypeScript.
-- Deploy presente por meio de Vercel + Render + Neon: [![Link]](https://scheduled-stock-count-frontend.vercel.app/login)
+- Deploy presente por meio de Vercel + Render + Neon: [Link](https://scheduled-stock-count-frontend.vercel.app/login)
 
 ### 🐳 Instruções para rodar localmente com Docker:
 Certifique-se de ter instalado em sua máquina:
