@@ -5,6 +5,8 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 const app = express();
 
+app.set("trust proxy", 1);
+
 const allowedOrigins = process.env.FRONTEND_URL
   ? process.env.FRONTEND_URL.split(",")
   : ["http://localhost:3001"];
