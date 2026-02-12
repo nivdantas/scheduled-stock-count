@@ -3,13 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { getBaseUrl } from "../utils/api";
 
-const getBaseUrl = () => {
-  if (typeof window === "undefined") return "http://backend:3000";
-  return window.location.origin.includes("localhost")
-    ? "http://localhost:3000"
-    : window.location.origin;
-};
 
 export function LoginForm() {
   const router = useRouter();

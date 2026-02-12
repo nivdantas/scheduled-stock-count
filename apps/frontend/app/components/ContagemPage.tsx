@@ -7,13 +7,7 @@ import type {
   ItemContagem,
   CardItemProps,
 } from "@/app/types/contagem";
-
-const getBaseUrl = () => {
-  if (typeof window === "undefined") return "http://backend:3000";
-  return window.location.origin.includes("localhost")
-    ? "http://localhost:3000"
-    : window.location.origin;
-};
+import { getBaseUrl } from "../utils/api";
 
 // --- Componentes Auxiliares ---
 

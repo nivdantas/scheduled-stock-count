@@ -1,10 +1,8 @@
 import ContagemPage from "@/app/components/ContagemPage";
 import { Contagem } from "@/app/types/contagem";
+import { getBaseUrl } from "@/app/utils/api";
 
-const baseUrl =
-  typeof window === "undefined"
-    ? "http://backend:3000"
-    : "http://localhost:3000";
+baseUrl = getBaseUrl();
 
 async function getContagem(id: string): Promise<Contagem> {
   const res = await fetch(`${baseUrl}/contagens/${id}`, {
