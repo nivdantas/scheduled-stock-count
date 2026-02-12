@@ -20,13 +20,14 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use(cookieParser());
+
 // Rotas
 app.use(authRoutes);
 app.use(contagemRoutes)
 
 const PORT = 3000;
 if (process.env.NODE_ENV !== 'production') {
-  app.listen(3000, () => console.log('Dev server on 3000'));
+  app.listen(3000, () => console.log('Backend API: porta 3000'));
 }
 
 export default app;
