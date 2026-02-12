@@ -9,7 +9,6 @@ const nextConfig: NextConfig = {
 			permanent: true,
 		}]
 	},
-  output: "standalone",
 	reactStrictMode: false,
 	outputFileTracingRoot: path.join(__dirname, '../../'),
 	typescript: {
