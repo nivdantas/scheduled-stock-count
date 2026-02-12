@@ -24,7 +24,6 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
-
 // Rotas
 app.use(authRoutes);
 app.use(contagemRoutes);
