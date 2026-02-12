@@ -1,4 +1,3 @@
-
 export const getBaseUrl = () => {
   if (typeof window === "undefined") {
     if (process.env.INTERNAL_API_URL) return process.env.INTERNAL_API_URL;
@@ -11,6 +10,6 @@ export const getBaseUrl = () => {
   }
 
   return window.location.origin.includes("localhost")
-      ? "http://localhost:3000"
-      : window.location.origin;
+    ? "http://localhost:3000"
+    : window.location.origin;
 };

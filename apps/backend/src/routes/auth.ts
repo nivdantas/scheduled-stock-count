@@ -19,7 +19,10 @@ router.post("/login", async (req, res) => {
       },
     });
 
-    if (!user) return res.status(401).json({ error: "Usuário ou credenciais inválida." });
+    if (!user)
+      return res
+        .status(401)
+        .json({ error: "Usuário ou credenciais inválida." });
 
     const senhaValida = await compare(password, user.password);
     if (!senhaValida)
@@ -35,20 +38,17 @@ router.post("/login", async (req, res) => {
 
     const contagemAtivaId = contagemAlvo ? contagemAlvo.id : null;
     const { password: _, contagens, ...userSemSenha } = user;
-	  res.cookie("stock_token", token, {
-		  httpOnly: true,
-		  secure: process.env.NODE_ENV === "production",
-		  maxAge: 24 * 60 * 60 * 1000,
-		  sameSite: "strict",
-		  path: "/"
-    })
+    res.cookie("stock_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: "strict",
+      path: "/",
+    });
 
     return res.json({ user: userSemSenha, contagemAtivaId });
-
   } catch (error) {
-
     return res.status(500).json({ error: "Erro no login" });
-
   }
 });
 
@@ -57,7 +57,7 @@ router.post("/logout", (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
-    path: "/"
+    path: "/",
   });
   return res.json({ message: "Deslogado com sucesso" });
 });
@@ -97,15 +97,11 @@ router.get("/verify", async (req, res) => {
     return res.json({
       authenticated: true,
       user: userSemSenha,
-      contagemAtivaId
+      contagemAtivaId,
     });
-
   } catch (error) {
-
     return res.status(401).json({ authenticated: false });
-
   }
 });
-
 
 export default router;

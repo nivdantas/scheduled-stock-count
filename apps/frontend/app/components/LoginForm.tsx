@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getBaseUrl } from "../utils/api";
 
-
 export function LoginForm() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -53,9 +52,9 @@ export function LoginForm() {
     const password = formData.get("password");
 
     if (!email || !password) {
-       setError("Por favor, preencha todos os campos.");
-       setLoading(false);
-       return;
+      setError("Por favor, preencha todos os campos.");
+      setLoading(false);
+      return;
     }
 
     try {
@@ -80,7 +79,6 @@ export function LoginForm() {
           router.push("/");
         }
       }, 100);
-
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message);
@@ -98,7 +96,10 @@ export function LoginForm() {
         role="status"
         aria-label="Verificando sessão..."
       >
-        <span className="w-10 h-10 border-4 border-gray-200 border-t-stock-red-1 rounded-full animate-spin" aria-hidden="true"></span>
+        <span
+          className="w-10 h-10 border-4 border-gray-200 border-t-stock-red-1 rounded-full animate-spin"
+          aria-hidden="true"
+        ></span>
         <span className="sr-only">Carregando...</span>
       </div>
     );
@@ -116,8 +117,17 @@ export function LoginForm() {
           role="alert"
           aria-live="polite"
         >
-          <svg className="w-5 h-5 text-red-700 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-            <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+          <svg
+            className="w-5 h-5 text-red-700 mt-0.5 shrink-0"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            aria-hidden="true"
+          >
+            <path
+              fillRule="evenodd"
+              d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+              clipRule="evenodd"
+            />
           </svg>
           <span className="font-medium">{error}</span>
         </div>
@@ -162,7 +172,7 @@ export function LoginForm() {
           Senha
         </label>
         <div className="relative group">
-           <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-stock-red-1 transition-colors">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400 group-focus-within:text-stock-red-1 transition-colors">
             <Image
               src="/lock_icon.svg"
               alt=""
@@ -193,13 +203,14 @@ export function LoginForm() {
       >
         {loading ? (
           <>
-            <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" aria-hidden="true" />
+            <span
+              className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"
+              aria-hidden="true"
+            />
             <span>Entrando...</span>
           </>
         ) : (
-          <>
-            Acessar Sistema
-          </>
+          <>Acessar Sistema</>
         )}
       </button>
     </form>

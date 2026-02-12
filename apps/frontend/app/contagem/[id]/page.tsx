@@ -2,9 +2,9 @@ import ContagemPage from "@/app/components/ContagemPage";
 import { Contagem } from "@/app/types/contagem";
 import { getBaseUrl } from "@/app/utils/api";
 
-baseUrl = getBaseUrl();
-
 async function getContagem(id: string): Promise<Contagem> {
+  const baseUrl = getBaseUrl();
+
   const res = await fetch(`${baseUrl}/contagens/${id}`, {
     cache: "no-cache",
   });

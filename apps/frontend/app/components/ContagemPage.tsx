@@ -81,10 +81,12 @@ function ModalObservacao({
           </div>
 
           <div className="flex flex-col items-end justify-self-end">
-             <span className="font-lato text-xs text-stock-2 mb-1">Qtd Informada</span>
-             <span className="font-lato text-lg md:text-xl text-stock-red-1 font-bold">
-                {qtdInformada}
-             </span>
+            <span className="font-lato text-xs text-stock-2 mb-1">
+              Qtd Informada
+            </span>
+            <span className="font-lato text-lg md:text-xl text-stock-red-1 font-bold">
+              {qtdInformada}
+            </span>
           </div>
         </div>
 
@@ -93,7 +95,10 @@ function ModalObservacao({
             htmlFor="obs-textarea"
             className="block text-base font-medium text-stock-5 mb-2 font-lato"
           >
-            Observação <span className="text-stock-red-2" aria-hidden="true">*</span>
+            Observação{" "}
+            <span className="text-stock-red-2" aria-hidden="true">
+              *
+            </span>
             <span className="sr-only">(obrigatório)</span>
           </label>
           <textarea
@@ -138,7 +143,10 @@ function CardItem({
 }: CardItemProps) {
   if (!item.produto)
     return (
-      <div className="p-2 text-stock-red-2 border border-stock-red-2 rounded" role="alert">
+      <div
+        className="p-2 text-stock-red-2 border border-stock-red-2 rounded"
+        role="alert"
+      >
         Erro: Produto desconhecido
       </div>
     );
@@ -148,8 +156,8 @@ function CardItem({
   const borderClass = isDivergente
     ? "border-stock-red-1 bg-red-50/10"
     : isConferido
-    ? "border-stock-green-light bg-green-50/10"
-    : "border-stock-3 bg-stock-1";
+      ? "border-stock-green-light bg-green-50/10"
+      : "border-stock-3 bg-stock-1";
 
   return (
     <article
@@ -158,10 +166,10 @@ function CardItem({
     >
       <div className="font-lato flex flex-col w-full">
         <div className="text-center mb-3">
-          <span className="text-xs font-mono text-stock-2 block mb-1 bg-stock-neutral-light inline-block px-2 py-0.5 rounded">
+          <span className="text-xs font-mono text-stock-2 mb-1 bg-stock-neutral-light inline-block px-2 py-0.5 rounded">
             {item.produto.codigoSistema}
           </span>
-          <h3 className="font-medium text-stock-6 text-base md:text-lg break-words leading-tight">
+          <h3 className="font-medium text-stock-6 text-base md:text-lg wrap-break-word leading-tight">
             {item.produto.nome}
           </h3>
 
@@ -210,7 +218,13 @@ function CardItem({
   );
 }
 
-function CardInput({ onConfirm, labelId }: { onConfirm: (qtd: number) => void; labelId: string }) {
+function CardInput({
+  onConfirm,
+  labelId,
+}: {
+  onConfirm: (qtd: number) => void;
+  labelId: string;
+}) {
   const [qtd, setQtd] = useState("");
 
   const handleConfirm = () => {
@@ -221,7 +235,9 @@ function CardInput({ onConfirm, labelId }: { onConfirm: (qtd: number) => void; l
 
   return (
     <div className="mt-2 flex gap-2 w-full max-w-[200px]">
-      <label htmlFor={labelId} className="sr-only">Quantidade</label>
+      <label htmlFor={labelId} className="sr-only">
+        Quantidade
+      </label>
       <input
         id={labelId}
         type="number"
@@ -381,15 +397,20 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     } catch (error) {
       console.error("Erro ao deslogar:", error);
     } finally {
-      if (typeof window !== 'undefined') {
-          localStorage.removeItem("stock_user");
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("stock_user");
       }
       router.refresh();
       router.push("/");
     }
   };
 
-  if (!contagem) return <div className="p-10 text-center animate-pulse">Carregando contagem...</div>;
+  if (!contagem)
+    return (
+      <div className="p-10 text-center animate-pulse">
+        Carregando contagem...
+      </div>
+    );
 
   const isFinalizada = contagem.status === "FINALIZADA";
 
@@ -402,14 +423,17 @@ export default function ContagemPage({ data }: { data: Contagem }) {
     );
   });
 
-  const aConferir = itensFiltrados.filter((i) => i.situacao === "A_CONFERIR") || [];
-  const conferidos = itensFiltrados.filter((i) => i.situacao === "CONFERIDO") || [];
-  const divergentes = itensFiltrados.filter((i) => i.situacao === "FALTANTE_EXCEDENTE");
+  const aConferir =
+    itensFiltrados.filter((i) => i.situacao === "A_CONFERIR") || [];
+  const conferidos =
+    itensFiltrados.filter((i) => i.situacao === "CONFERIDO") || [];
+  const divergentes = itensFiltrados.filter(
+    (i) => i.situacao === "FALTANTE_EXCEDENTE",
+  );
 
   return (
     <main className="min-h-screen bg-stock-1 p-3 md:p-6 flex justify-center">
       <div className="w-full xl:max-w-340 lg:max-w-4xl md:max-w-2xl">
-
         <header className="bg-stock-1 p-4 md:p-5 shadow-sm rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center border border-stock-3 font-lato gap-4">
           <div>
             <h1 className="text-xl md:text-2xl font-bold text-stock-7 mb-1 flex flex-wrap items-center gap-2">
@@ -428,7 +452,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
         </header>
 
         <div className="my-4 md:my-5 relative">
-          <label htmlFor="search-input" className="sr-only">Buscar produto</label>
+          <label htmlFor="search-input" className="sr-only">
+            Buscar produto
+          </label>
           <input
             id="search-input"
             type="text"
@@ -439,40 +465,41 @@ export default function ContagemPage({ data }: { data: Contagem }) {
           />
         </div>
 
-
-          <div className="my-4 flex flex-col sm:flex-row justify-start gap-3 md:gap-5 font-averia">
+        <div className="my-4 flex flex-col sm:flex-row justify-start gap-3 md:gap-5 font-averia">
           {!isFinalizada && (
-          <>
-            <button
-              onClick={handleSalvar}
-              className="w-full sm:w-auto bg-stock-1 hover:bg-stock-neutral-light text-stock-5 px-4 py-3 md:py-2 rounded shadow transition-colors border border-stock-2 uppercase cursor-pointer min-h-[44px] flex items-center justify-center font-bold"
-            >
-              Salvar
-            </button>
-            <button
-              onClick={() => setConfirmarFinalizacao(true)}
-              className="w-full sm:w-auto bg-stock-red-1 hover:bg-stock-red-3 text-stock-1 px-4 py-3 md:py-2 rounded shadow transition-colors uppercase cursor-pointer min-h-[44px] flex items-center justify-center font-bold"
-            >
-              Finalizar
-            </button>
-          </>
-            )}
-            <button
-              onClick={handleLogout}
-              className="w-full sm:w-auto bg-stock-1 hover:bg-red-50 text-stock-red-3 px-4 py-3 md:py-2 rounded shadow transition-colors border border-stock-red-3 uppercase cursor-pointer sm:ml-auto min-h-[44px] flex items-center justify-center font-bold"
-            >
-              Sair
-            </button>
-          </div>
+            <>
+              <button
+                onClick={handleSalvar}
+                className="w-full sm:w-auto bg-stock-1 hover:bg-stock-neutral-light text-stock-5 px-4 py-3 md:py-2 rounded shadow transition-colors border border-stock-2 uppercase cursor-pointer min-h-[44px] flex items-center justify-center font-bold"
+              >
+                Salvar
+              </button>
+              <button
+                onClick={() => setConfirmarFinalizacao(true)}
+                className="w-full sm:w-auto bg-stock-red-1 hover:bg-stock-red-3 text-stock-1 px-4 py-3 md:py-2 rounded shadow transition-colors uppercase cursor-pointer min-h-[44px] flex items-center justify-center font-bold"
+              >
+                Finalizar
+              </button>
+            </>
+          )}
+          <button
+            onClick={handleLogout}
+            className="w-full sm:w-auto bg-stock-1 hover:bg-red-50 text-stock-red-3 px-4 py-3 md:py-2 rounded shadow transition-colors border border-stock-red-3 uppercase cursor-pointer sm:ml-auto min-h-[44px] flex items-center justify-center font-bold"
+          >
+            Sair
+          </button>
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6">
-
           {/* Coluna A Conferir */}
           <section
             className="bg-stock-1 p-3 md:p-4 rounded-lg shadow border-t-4 border-stock-blue-1"
             aria-labelledby="heading-a-conferir"
           >
-            <h2 id="heading-a-conferir" className="text-lg md:text-xl font-bold mb-4 flex justify-between text-stock-blue-2 font-averia uppercase items-center">
+            <h2
+              id="heading-a-conferir"
+              className="text-lg md:text-xl font-bold mb-4 flex justify-between text-stock-blue-2 font-averia uppercase items-center"
+            >
               A Conferir
               <span className="bg-stock-blue-light text-stock-blue-2 px-2.5 py-0.5 rounded-full text-sm font-bold min-w-[24px] text-center">
                 {aConferir.length}
@@ -483,11 +510,17 @@ export default function ContagemPage({ data }: { data: Contagem }) {
                 <CardItem
                   key={item.id}
                   item={item}
-                  onContar={isFinalizada ? undefined : (qtd) => iniciarContagem(item, qtd)}
+                  onContar={
+                    isFinalizada
+                      ? undefined
+                      : (qtd) => iniciarContagem(item, qtd)
+                  }
                 />
               ))}
               {aConferir.length === 0 && (
-                <p className="text-stock-4 text-sm text-center py-4 italic">Nenhum item pendente.</p>
+                <p className="text-stock-4 text-sm text-center py-4 italic">
+                  Nenhum item pendente.
+                </p>
               )}
             </div>
           </section>
@@ -497,7 +530,10 @@ export default function ContagemPage({ data }: { data: Contagem }) {
             className="bg-stock-1 p-3 md:p-4 rounded-lg shadow border-t-4 border-stock-red-2"
             aria-labelledby="heading-divergentes"
           >
-            <h2 id="heading-divergentes" className="text-lg md:text-xl font-bold mb-4 text-stock-red-2 flex justify-between font-averia uppercase items-center">
+            <h2
+              id="heading-divergentes"
+              className="text-lg md:text-xl font-bold mb-4 text-stock-red-2 flex justify-between font-averia uppercase items-center"
+            >
               Divergentes
               <span className="bg-red-100 text-stock-red-1 px-2.5 py-0.5 rounded-full text-sm font-bold min-w-[24px] text-center">
                 {divergentes.length}
@@ -514,7 +550,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
                 />
               ))}
               {divergentes.length === 0 && (
-                <p className="text-stock-4 text-sm text-center py-4 italic">Nenhuma divergência.</p>
+                <p className="text-stock-4 text-sm text-center py-4 italic">
+                  Nenhuma divergência.
+                </p>
               )}
             </div>
           </section>
@@ -524,7 +562,10 @@ export default function ContagemPage({ data }: { data: Contagem }) {
             className="bg-stock-1 p-3 md:p-4 rounded-lg shadow border-t-4 border-stock-green-2 opacity-90"
             aria-labelledby="heading-conferidos"
           >
-            <h2 id="heading-conferidos" className="text-lg md:text-xl font-bold mb-4 text-stock-green-2 flex justify-between font-averia uppercase items-center">
+            <h2
+              id="heading-conferidos"
+              className="text-lg md:text-xl font-bold mb-4 text-stock-green-2 flex justify-between font-averia uppercase items-center"
+            >
               Conferidos
               <span className="bg-green-100 text-stock-green-2 px-2.5 py-0.5 rounded-full text-sm font-bold min-w-[24px] text-center">
                 {conferidos.length}
@@ -541,7 +582,9 @@ export default function ContagemPage({ data }: { data: Contagem }) {
                 />
               ))}
               {conferidos.length === 0 && (
-                <p className="text-stock-4 text-sm text-center py-4 italic">Nenhum item finalizado.</p>
+                <p className="text-stock-4 text-sm text-center py-4 italic">
+                  Nenhum item finalizado.
+                </p>
               )}
             </div>
           </section>
@@ -567,10 +610,16 @@ export default function ContagemPage({ data }: { data: Contagem }) {
             aria-describedby="alert-finalizar-desc"
           >
             <div className="bg-stock-1 p-6 rounded-lg shadow-xl w-full max-w-sm border border-stock-3">
-              <h3 id="alert-finalizar-title" className="text-xl font-bold mb-2 text-stock-7">
+              <h3
+                id="alert-finalizar-title"
+                className="text-xl font-bold mb-2 text-stock-7"
+              >
                 Tem certeza?
               </h3>
-              <p id="alert-finalizar-desc" className="text-stock-5 mb-6 text-base leading-relaxed">
+              <p
+                id="alert-finalizar-desc"
+                className="text-stock-5 mb-6 text-base leading-relaxed"
+              >
                 Ao finalizar, você{" "}
                 <strong className="text-stock-red-2 font-bold">
                   não poderá mais alterar
