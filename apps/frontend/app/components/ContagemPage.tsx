@@ -635,7 +635,7 @@ export default function ContagemPage({ data }: { data: Contagem }) {
                 </button>
                 <button
                   onClick={handleFinalizar}
-                  className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-stock-green-2 text-stock-1 rounded hover:bg-stock-green-3 transition-colors shadow-sm font-bold min-h-[44px]"
+                  className="w-full sm:w-auto px-4 py-3 sm:py-2 bg-stock-red-2 text-stock-1 rounded hover:bg-stock-red-3 transition-colors shadow-sm font-bold min-h-[44px]"
                 >
                   Confirmar Encerramento
                 </button>
