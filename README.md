@@ -22,7 +22,7 @@ Certifique-se de ter instalado em sua máquina:
 * [Docker](https://www.docker.com/get-started)
 * [Docker Compose](https://docs.docker.com/compose/install/) (Geralmente incluído no Docker Desktop)
 ```bash
-    git clone [https://github.com/nivdantas/scheduled-stock-count](https://github.com/nivdantas/scheduled-stock-count)
+    git clone https://github.com/nivdantas/scheduled-stock-count
     cd projeto
     docker-compose up -d --build
    ```
