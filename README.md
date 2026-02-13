@@ -23,7 +23,7 @@ Certifique-se de ter instalado em sua máquina:
 * [Docker Compose](https://docs.docker.com/compose/install/) (Geralmente incluído no Docker Desktop)
 ```bash
     git clone https://github.com/nivdantas/scheduled-stock-count
-    cd projeto
+    cd scheduled-stock-count
     docker-compose up -d --build
    ```
 Frontend: http://localhost:3001
