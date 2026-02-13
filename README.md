@@ -24,7 +24,7 @@ Certifique-se de ter instalado em sua máquina:
 ```bash
     git clone https://github.com/nivdantas/scheduled-stock-count
     cd scheduled-stock-count
-    docker-compose up -d --build
+    docker-compose up --build
    ```
 Frontend: http://localhost:3001
 Backend: http://localhost:3000
